@@ -88,6 +88,7 @@ resource "aws_key_pair" "tf_web_key" {
   public_key = file("~/.ssh/id_rsa.pub")
 }
        
+       
 resource "aws_instance" "server" {
   count                  = 3
   ami                    = data.aws_ami.amazon.id

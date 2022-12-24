@@ -87,8 +87,7 @@ resource "aws_key_pair" "tf_web_key" {
   key_name   = "tf_key"
   public_key = file("~/.ssh/id_rsa.pub")
 }
-       
-       
+              
 resource "aws_instance" "server" {
   count                  = 3
   ami                    = data.aws_ami.amazon.id
@@ -96,9 +95,9 @@ resource "aws_instance" "server" {
   subnet_id              = aws_subnet.tf_webvpc_subnet.id
   vpc_security_group_ids = [aws_security_group.allow_ssh.id]
   key_name               = aws_key_pair.tf_web_key.id
-  #user_data              = "${element(var.control_node_userdata, count.index)}"  
+  user_data              = join("",[count.index, var.control_node_userdata])  
   tags = {
-    Name = join("-", [ "Server", count.index ])
+    Name = join("_", [ "Server", count.index ])
   }
 }
 

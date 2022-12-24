@@ -16,6 +16,7 @@ variable "server_name" {
 
 variable "control_node_userdata" {
   description = "userdata for control-node"
-  type        = list(string)
-  default     = ["file('userdata.tpl')", "file('userdata1.tpl')", "file('userdata2.tpl')"]
+  type        = string
+  default     = "userdata.tpl"
+  #default     = ["file('userdata.tpl')", "file('userdata1.tpl')", "file('userdata2.tpl')"]
 }

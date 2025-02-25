@@ -12,3 +12,12 @@ provider "aws" {
   #shared_credentials_files = ["~/.aws/credentials"]
   #profile                  = "dev"
 }
+
+terraform {
+  backend "s3" {
+    bucket = "s3backend-gha"
+    key    = "terraform.tfstate"
+    region = "us-east-1"
+    encrypt = true  # Optional: Encrypt the state file in S3
+  }
+}

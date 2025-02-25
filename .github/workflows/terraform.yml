@@ -135,6 +135,10 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
 
+      - name: Debug GitHub Event
+        run: |
+             echo "GitHub Event Name: $GITHUB_EVENT_NAME"
+
       - name: Terraform Init
         run: terraform init
 

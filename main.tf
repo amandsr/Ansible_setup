@@ -80,7 +80,7 @@ data "aws_ami" "amazon" {
 
   filter {
     name   = "name"
-    values = ["amzn2-ami-kernel-5.10-hvm-2.0.20220606.1-x86_64-gp2"]
+    values = ["amzn2-ami-kernel-5.10-hvm-*-x86_64-gp2"]
   }
 }
 resource "aws_key_pair" "tf_web_key" {
@@ -95,7 +95,12 @@ resource "aws_instance" "server" {
   subnet_id              = aws_subnet.tf_webvpc_subnet.id
   vpc_security_group_ids = [aws_security_group.allow_ssh.id]
   key_name               = aws_key_pair.tf_web_key.id
-  user_data              = join("",[count.index, var.control_node_userdata])  
+  user_data = <<-EOF
+    #!/bin/bash
+    echo "Setting up instance ${count.index}"
+
+    ${lookup(var.user_data, count.index, "")}
+  EOF 
   tags = {
     Name = join("_", [ "Server", count.index ])
   }

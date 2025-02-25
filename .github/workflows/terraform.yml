@@ -125,6 +125,7 @@ jobs:
   terraform_destroy:
     name: 'Terraform Destroy'
     runs-on: ubuntu-latest
+    needs: terraform_apply
     #if: github.event_name == 'workflow_dispatch'  # Manually trigger this job
     environment: production
 
@@ -138,6 +139,11 @@ jobs:
       - name: Debug GitHub Event
         run: |
              echo "GitHub Event Name: $GITHUB_EVENT_NAME"
+
+      - name: Wait for 5 minutes before destroy
+        run: |
+          echo "Waiting for 5 minutes..."
+          sleep 300  # Wait for 5 minutes (300 seconds)
 
       - name: Terraform Init
         run: terraform init

@@ -85,7 +85,7 @@ data "aws_ami" "amazon" {
 }
 resource "aws_key_pair" "tf_web_key" {
   key_name   = "tf_key"
-  public_key = file("~/.ssh/id_rsa.pub")
+  public_key = var.ssh_public_key
 }
               
 resource "aws_instance" "server" {

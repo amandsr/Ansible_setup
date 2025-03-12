@@ -67,7 +67,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Print bucket var
-        run: echo $TF_VAR_bkt
+        run: echo "${{ env.TF_VAR_bkt}}"
 
       - name: Set environment dynamically
         id: set-environment

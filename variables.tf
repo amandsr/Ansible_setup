@@ -18,6 +18,11 @@ variable "ssh_public_key" {
   type        = string
 }
 
+variable "bkt" {
+  description = "The public SSH key to use for the EC2 instance."
+  type        = string
+}
+
 variable "user_data" {
   type = map(string)
   default = {

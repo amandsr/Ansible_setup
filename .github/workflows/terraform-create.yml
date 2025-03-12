@@ -54,6 +54,12 @@ on:
       - main     # Trigger on push to the main branch (for production)
       - develop  # Trigger on push to the develop branch (for staging)
   pull_request:
+  workflow_dispatch:
+    inputs:
+      run_destroy:
+        description: 'Run Terraform Destroy job?'
+        required: true
+        default: 'false'  # Default is not to run destroy
 
 jobs:
   set-environment:
@@ -177,7 +183,7 @@ jobs:
     name: 'Terraform Destroy'
     runs-on: ubuntu-latest
     needs: terraform_apply
-    if: github.event_name == 'workflow_dispatch'  # Manually trigger this job
+    if: ${{ github.event.inputs.run_destroy == 'true' }}
     environment: ${{ needs.set-environment.outputs.environment }}
 
     steps:

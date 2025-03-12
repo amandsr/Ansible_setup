@@ -86,6 +86,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{ needs.set-environment.outputs.environment }}
     
+    steps:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         

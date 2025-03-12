@@ -182,7 +182,7 @@ jobs:
   terraform_destroy:
     name: 'Terraform Destroy'
     runs-on: ubuntu-latest
-    needs: terraform_apply  # Ensure this job runs after the plan job
+    needs: [set-environment, terraform_apply]  # Ensure this job runs after the plan job
     environment: ${{ needs.set-environment.outputs.environment }}
     env:
       AWS_ACCESS_KEY_ID: ${{ needs.set-environment.outputs.aws_access_key_id }}

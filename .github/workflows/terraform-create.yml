@@ -66,24 +66,23 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Print bucket var
-        run: |
-          echo "TF_VAR_bkt is set to: $TF_VAR_bkt"
-
       - name: Set environment dynamically
         id: set-environment
         run: |
-          echo "Deploying to ${{ needs.set-environment.outputs.environment }} environment"
-          # Deployment logic depending on the environment
-          if [ "${{ needs.set-environment.outputs.environment }}" == "production" ]; then
-            echo "Deploying to Production"
-            # Add your production deployment commands here
-          elif [ "${{ needs.set-environment.outputs.environment }}" == "dev" ]; then
-            echo "Deploying to Development"
-            # Add your dev deployment commands here
+          if [ "${GITHUB_REF}" == "refs/heads/main" ]; then
+            echo "ENVIRONMENT=production" >> $GITHUB_ENV
+            echo "environment=production" >> $GITHUB_ENV  # Set output to environment file
+          elif [ "${GITHUB_REF}" == "refs/heads/develop" ]; then
+            echo "ENVIRONMENT=dev" >> $GITHUB_ENV
+            echo "environment=dev" >> $GITHUB_ENV  # Set output to environment file
           else
-            echo "Unknown environment. No deployment performed."
+            echo "ENVIRONMENT=unknown" >> $GITHUB_ENV
+            echo "environment=unknown" >> $GITHUB_ENV  # Set output to environment file
           fi
+
+      - name: Print environment
+        run: |
+          echo "Environment set to: ${{ steps.set-environment.outputs.environment }}"
 
   terraform_validate:
     name: 'Terraform Init'

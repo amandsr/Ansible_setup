@@ -185,7 +185,10 @@ jobs:
     needs: terraform_apply
     #if: ${{ github.event.inputs.run_destroy == 'true' }}
     environment: ${{ needs.set-environment.outputs.environment }}
-
+    env:
+      AWS_ACCESS_KEY_ID: ${{ needs.set-environment.outputs.aws_access_key_id }}
+      AWS_SECRET_ACCESS_KEY: ${{ needs.set-environment.outputs.aws_secret_access_key }}
+      
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4

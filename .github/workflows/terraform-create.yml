@@ -96,7 +96,7 @@ jobs:
         uses: hashicorp/setup-terraform@v1
         
       - name: Terraform Init
-        run: terraform init
+        run: terraform init -var="bucket_name=$TF_VAR_bkt"
         
       - name: Terraform fmt
         run: terraform fmt
@@ -118,10 +118,10 @@ jobs:
         uses: hashicorp/setup-terraform@v1
        
       - name: Terraform Init
-        run: terraform init
+        run: terraform init -var="bucket_name=$TF_VAR_bkt"
 
       - name: Terraform Plan
-        run: terraform plan -input=false
+        run: terraform plan -var="bucket_name=$TF_VAR_bkt"
 
   terraform_apply:
     name: 'Terraform Apply'
@@ -137,10 +137,10 @@ jobs:
         uses: hashicorp/setup-terraform@v1
 
       - name: Terraform Init
-        run: terraform init
+        run: terraform init -var="bucket_name=$TF_VAR_bkt"
 
       - name: Terraform Plan
-        run: terraform plan -input=false
+        run: terraform plan -var="bucket_name=$TF_VAR_bkt"
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve -input=false
+        run: terraform apply -auto-approve -var="bucket_name=$TF_VAR_bkt"

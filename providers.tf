@@ -15,7 +15,7 @@ provider "aws" {
 
 terraform {
   backend "s3" {
-    bucket = "gha-s3-backend-dev"
+    bucket = "gha-s3-backend-dev1"
     key    = "terraform.tfstate"
     region = "us-east-1"
     encrypt = true  # Optional: Encrypt the state file in S3

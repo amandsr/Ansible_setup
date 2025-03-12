@@ -70,19 +70,15 @@ jobs:
         id: set-environment
         run: |
           if [ "${GITHUB_REF}" == "refs/heads/main" ]; then
-            echo "ENVIRONMENT=production" >> $GITHUB_ENV
-            echo "environment=production" >> $GITHUB_ENV  # Set output to environment file
+            echo "::set-output name=environment::production"  # Set output for the next jobs
           elif [ "${GITHUB_REF}" == "refs/heads/develop" ]; then
-            echo "ENVIRONMENT=dev" >> $GITHUB_ENV
-            echo "environment=dev" >> $GITHUB_ENV  # Set output to environment file
+            echo "::set-output name=environment::dev"  # Set output for the next jobs
           else
-            echo "ENVIRONMENT=unknown" >> $GITHUB_ENV
-            echo "environment=unknown" >> $GITHUB_ENV  # Set output to environment file
+            echo "::set-output name=environment::unknown"  # Set output for the next jobs
           fi
 
-      - name: Print environment
-        run: |
-          echo "Environment set to: ${{ steps.set-environment.outputs.environment }}"
+      - name: Print the environment value
+        run: echo "Environment set to ${{ steps.set-environment.outputs.environment }}"
 
   terraform_validate:
     name: 'Terraform Init'

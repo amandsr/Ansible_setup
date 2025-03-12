@@ -57,28 +57,28 @@ on:
   pull_request:
 
 jobs:
-  set-environment:
-    runs-on: ubuntu-latest
-    outputs:
-      environment: ${{ steps.set-environment.outputs.environment }}
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+   set-environment:
+     runs-on: ubuntu-latest
+     outputs:
+       environment: ${{ steps.set-environment.outputs.environment }}
+     steps:
+       - name: Checkout Repository
+         uses: actions/checkout@v4
 
-      - name: Set environment dynamically
-        id: set-environment
-        run: |
-          echo "Deploying to ${{ needs.set-environment.outputs.environment }} environment"
-          # Deployment logic depending on the environment
-          if [ "${{ needs.set-environment.outputs.environment }}" == "production" ]; then
-            echo "Deploying to Production"
-            # Add your production deployment commands here
-          elif [ "${{ needs.set-environment.outputs.environment }}" == "dev" ]; then
-            echo "Deploying to Development"
-            # Add your dev deployment commands here
-          else
-            echo "Unknown environment. No deployment performed."
-          fi
+       - name: Set environment dynamically
+         id: set-environment
+         run: |
+           echo "Deploying to ${{ needs.set-environment.outputs.environment }} environment"
+           # Deployment logic depending on the environment
+           if [ "${{ needs.set-environment.outputs.environment }}" == "production" ]; then
+             echo "Deploying to Production"
+             # Add your production deployment commands here
+           elif [ "${{ needs.set-environment.outputs.environment }}" == "dev" ]; then
+             echo "Deploying to Development"
+             # Add your dev deployment commands here
+           else
+             echo "Unknown environment. No deployment performed."
+           fi
 
    terraform_validate:
     name: 'Terraform Init'
@@ -98,43 +98,43 @@ jobs:
       - name: Terraform Validate
         run: terraform validate
 
-  terraform_plan:
-    name: 'Terraform Plan'
-    runs-on: ubuntu-latest
-    needs: [set-environment, terraform_validate]  # Ensure this job runs after the init job
-    environment: ${{ needs.set-environment.outputs.environment }}
+   terraform_plan:
+     name: 'Terraform Plan'
+     runs-on: ubuntu-latest
+     needs: [set-environment, terraform_validate]  # Ensure this job runs after the init job
+     environment: ${{ needs.set-environment.outputs.environment }}
 
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+     steps:
+       - name: Checkout Repository
+         uses: actions/checkout@v4
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
+       - name: Setup Terraform
+         uses: hashicorp/setup-terraform@v1
         
-      - name: Terraform Init
-        run: terraform init
+       - name: Terraform Init
+         run: terraform init
 
-      - name: Terraform Plan
-        run: terraform plan -input=false
+       - name: Terraform Plan
+         run: terraform plan -input=false
 
-  terraform_apply:
-    name: 'Terraform Apply'
-    runs-on: ubuntu-latest
-    needs: [set-environment, terraform_plan]  # Ensure this job runs after the plan job
-    environment: ${{ needs.set-environment.outputs.environment }}
+   terraform_apply:
+     name: 'Terraform Apply'
+     runs-on: ubuntu-latest
+     needs: [set-environment, terraform_plan]  # Ensure this job runs after the plan job
+     environment: ${{ needs.set-environment.outputs.environment }}
 
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+     steps:
+       - name: Checkout Repository
+         uses: actions/checkout@v4
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
+       - name: Setup Terraform
+         uses: hashicorp/setup-terraform@v1
 
-      - name: Terraform Init
-        run: terraform init
+       - name: Terraform Init
+         run: terraform init
 
-      - name: Terraform Plan
-        run: terraform plan -input=false
+       - name: Terraform Plan
+         run: terraform plan -input=false
 
-      - name: Terraform Apply
-        run: terraform apply -auto-approve -input=false
+       - name: Terraform Apply
+         run: terraform apply -auto-approve -input=false

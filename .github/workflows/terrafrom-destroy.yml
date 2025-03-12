@@ -7,7 +7,7 @@ on:
     workflows: ["Terraform Create"]  # Triggered when the "Create Resources" workflow completes
     types:
       - completed 
-  workflow_dispatch:  # Allow manual trigger
+  #workflow_dispatch:  # Allow manual trigger
   
 jobs:
   terraform_destroy:
@@ -26,6 +26,7 @@ jobs:
         run: |
              echo "GitHub Event Name: $GITHUB_EVENT_NAME"
              echo "Conclusion of the Create Workflow: ${{ github.event.workflow_run.conclusion }}"
+             echo "Environment value: ${{ github.event.workflow_run.output.environment }}"
 
       - name: Wait for 5 minutes before destroy
         run: |

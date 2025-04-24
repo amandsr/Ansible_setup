@@ -21,10 +21,14 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "Checking last successful run of 'Terraform Create'"
-          gh run list --workflow="Terraform Create" --limit 1 --json status,conclusion \
+          gh run list \
+            --repo "${{ github.repository }}" \
+            --workflow="Terraform Create" \
+            --limit 1 \
+            --json status,conclusion \
             --jq '.[0] | select(.status == "completed" and .conclusion == "success")' || {
-              echo "❌ Last run of Terraform Create did not succeed."
-              exit 1
+            echo "❌ Last run of Terraform Create did not succeed."
+            exit 1
             }
 
   terraform_validate:

@@ -8,19 +8,31 @@ env:
 on:
   workflow_dispatch:
 
-  workflow_run:
-    workflows: ["Terraform Create"]
-    types:
-      - completed
-
 permissions:
   contents: read
 
 jobs:
+  check-terraform-create:
+    name: Check "Terraform Create" Success
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up GitHub CLI
+        uses: cli/cli-action@v1
+
+      - name: Check last successful run of "Terraform Create"
+        id: check_status
+        run: |
+          RUN_ID=$(gh run list --workflow="Terraform Create" --limit 1 --json status,conclusion --jq '.[0].status + ":" + .[0].conclusion')
+          echo "Last run status: $RUN_ID"
+          if [[ "$RUN_ID" != "completed:success" ]]; then
+            echo "❌ Last run of 'Terraform Create' did not complete successfully."
+            exit 1
+          fi
+
   terraform_validate:
-    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }} 
     name: 'Terraform Init'
     runs-on: ubuntu-latest
+    needs: check-terraform-create
     environment: production
 
     steps:
@@ -40,7 +52,6 @@ jobs:
         run: terraform validate
 
   terraform_destroy_plan:
-    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     name: 'Terraform Destroy Plan'
     runs-on: ubuntu-latest
     needs: terraform_validate  # Ensure this job runs after the init job
@@ -60,7 +71,6 @@ jobs:
         run:  terraform plan -destroy -input=false
 
   terraform_destroy:
-    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     name: 'Terraform Destroy'
     runs-on: ubuntu-latest
     needs: terraform_destroy_plan

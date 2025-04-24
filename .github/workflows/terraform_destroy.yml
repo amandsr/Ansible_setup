@@ -16,18 +16,16 @@ jobs:
     name: Check "Terraform Create" Success
     runs-on: ubuntu-latest
     steps:
-      - name: Set up GitHub CLI
-        uses: cli/cli-action@v1
-
       - name: Check last successful run of "Terraform Create"
-        id: check_status
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          RUN_ID=$(gh run list --workflow="Terraform Create" --limit 1 --json status,conclusion --jq '.[0].status + ":" + .[0].conclusion')
-          echo "Last run status: $RUN_ID"
-          if [[ "$RUN_ID" != "completed:success" ]]; then
-            echo "❌ Last run of 'Terraform Create' did not complete successfully."
-            exit 1
-          fi
+          echo "Checking last successful run of 'Terraform Create'"
+          gh run list --workflow="Terraform Create" --limit 1 --json status,conclusion \
+            --jq '.[0] | select(.status == "completed" and .conclusion == "success")' || {
+              echo "❌ Last run of Terraform Create did not succeed."
+              exit 1
+            }
 
   terraform_validate:
     name: 'Terraform Init'
